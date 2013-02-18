@@ -1,0 +1,6 @@
+/** Automatically generated file. DO NOT MODIFY */
+package com.dailyinvention.wordpressthemechanger;
+
+public final class BuildConfig {
+    public final static boolean DEBUG = true;
+}
