@@ -1,6 +1,7 @@
 package com.dailyinvention.wordpressthemechanger;
 
 import java.net.URI;
+import java.util.HashMap;
 
 import org.xmlrpc.android.XMLRPCClient;
 import org.xmlrpc.android.XMLRPCException;
@@ -10,7 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 
-//import java.util.HashMap;
+
 
 public class Client extends Activity {
     
@@ -31,13 +32,19 @@ public class Client extends Activity {
      
     private String getDataMethod(String username, String password) {
         String text = "";
-        String result = null;
+        Object[] result = null;
         Object[] params = {username, password};
         try {
-            result = (String) client.call("themes.getThemes",params);
+            result = (Object[]) client.call("themes.getThemes",params);
             if (result != null) {
 				if (result != null) {
-					text = "Awesome!";				
+					for(Object o: result) {
+						@SuppressWarnings("unchecked")
+						HashMap<String, String> map = (HashMap<String, String>) o;
+						String items[] = map.keySet().toArray(new String[0]);
+						text = items[0];
+			          
+					}
 				}
             }
         } catch (XMLRPCException e) {
