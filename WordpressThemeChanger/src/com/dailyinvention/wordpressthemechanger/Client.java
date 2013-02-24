@@ -2,6 +2,8 @@ package com.dailyinvention.wordpressthemechanger;
 
 import java.net.URI;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
 
 import org.xmlrpc.android.XMLRPCClient;
 import org.xmlrpc.android.XMLRPCException;
@@ -40,10 +42,18 @@ public class Client extends Activity {
 				if (result != null) {
 					for(Object o: result) {
 						@SuppressWarnings("unchecked")
-						HashMap<String, String> map = (HashMap<String, String>) o;
+						HashMap map = (HashMap) o;
+						Set keys = map.keySet();
+						for (Iterator i = keys.iterator(); i.hasNext();) 
+								   {
+								       String key = (String) i.next();
+								       String value = (String) map.get(key);
+								       text = key + " = " + value;
+								   }
+						/*
 						String items[] = map.keySet().toArray(new String[0]);
 						text = items[0];
-			          
+			          	*/
 					}
 				}
             }
