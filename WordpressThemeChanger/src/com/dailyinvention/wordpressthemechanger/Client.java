@@ -33,16 +33,11 @@ public class Client extends Activity {
         String text = "";
         //Object[] params = {username, password};
         try {
-            String result = (String) client.call("themes.getThemes","admin","Uncledat03");
-            
-            	text = result;
-                
-            
-            
-            
-           
-            
-            
+            Object[] result = (Object[]) client.call("themes.getThemes","admin","Uncledat03");
+            for (Object o: result)
+            {	
+            	text = o.toString();
+            }	
             
         } catch (XMLRPCException e) {
             Log.w("XMLRPC Test", "Error", e);
