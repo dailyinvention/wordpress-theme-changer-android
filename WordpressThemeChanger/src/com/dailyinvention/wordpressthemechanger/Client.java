@@ -1,9 +1,6 @@
 package com.dailyinvention.wordpressthemechanger;
 
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
 
 import org.xmlrpc.android.XMLRPCClient;
 import org.xmlrpc.android.XMLRPCException;
@@ -29,34 +26,24 @@ public class Client extends Activity {
       client = new XMLRPCClient(uri);
          
       TextView TextViewtextView = (TextView) findViewById(R.id.text_view);
-      TextViewtextView.setText(getDataMethod("admin","password"));
+      TextViewtextView.setText(getDataMethod());
     }
      
-    private String getDataMethod(String username, String password) {
+    private String getDataMethod() {
         String text = "";
-        Object[] result = null;
-        Object[] params = {username, password};
+        //Object[] params = {username, password};
         try {
-            result = (Object[]) client.call("themes.getThemes",params);
-            if (result != null) {
-				if (result != null) {
-					for(Object o: result) {
-						@SuppressWarnings("unchecked")
-						HashMap map = (HashMap) o;
-						Set keys = map.keySet();
-						for (Iterator i = keys.iterator(); i.hasNext();) 
-								   {
-								       String key = (String) i.next();
-								       String value = (String) map.get(key);
-								       text = key + " = " + value;
-								   }
-						/*
-						String items[] = map.keySet().toArray(new String[0]);
-						text = items[0];
-			          	*/
-					}
-				}
-            }
+            String result = (String) client.call("themes.getThemes","admin","Uncledat03");
+            
+            	text = result;
+                
+            
+            
+            
+           
+            
+            
+            
         } catch (XMLRPCException e) {
             Log.w("XMLRPC Test", "Error", e);
             text = "XMLRPC error" + e;
