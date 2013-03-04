@@ -12,5 +12,6 @@
 			<accessrule kind="nonaccessible" pattern="com/android/internal/**"/>
 		</accessrules>
 	</classpathentry>
+	<classpathentry kind="lib" path="/Users/dailyinvention/Documents/aXMLRPC_v1.5.0.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

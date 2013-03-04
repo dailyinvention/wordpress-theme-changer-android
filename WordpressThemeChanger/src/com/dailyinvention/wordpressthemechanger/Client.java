@@ -1,6 +1,8 @@
 package com.dailyinvention.wordpressthemechanger;
 
-import java.net.URI;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.HashMap;
 
 import org.xmlrpc.android.XMLRPCClient;
 import org.xmlrpc.android.XMLRPCException;
@@ -14,16 +16,13 @@ import android.widget.TextView;
 
 public class Client extends Activity {
     
-    private XMLRPCClient client;
-    private URI uri;
      
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_client);
          
-        uri = URI.create("http://test-wp.apache.local/xmlrpc.php");
-      client = new XMLRPCClient(uri);
+        //uri = URI.create("http://test-wp.apache.local/xmlrpc.php");
          
       TextView TextViewtextView = (TextView) findViewById(R.id.text_view);
       TextViewtextView.setText(getDataMethod());
@@ -31,18 +30,21 @@ public class Client extends Activity {
      
     private String getDataMethod() {
         String text = "";
-        //Object[] params = {username, password};
+ 
         try {
-            Object[] result = (Object[]) client.call("themes.getThemes","admin","Uncledat03");
-            for (Object o: result)
-            {	
-            	text = o.toString();
-            }	
+        	XMLRPCClient client = new XMLRPCClient(new URL("http://test-wp.apache.local/xmlrpc.php"));
+            HashMap<String,Object> result = (HashMap<String,Object>) client.call("themes.getThemes","admin","password");
+            for (String key : result.keySet()){
+            	text = key;
+            }
             
         } catch (XMLRPCException e) {
             Log.w("XMLRPC Test", "Error", e);
             text = "XMLRPC error" + e;
-        }       
+        } catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}       
         return text;
     }
 }
