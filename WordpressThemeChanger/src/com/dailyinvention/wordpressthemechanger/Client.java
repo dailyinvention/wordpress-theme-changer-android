@@ -2,14 +2,15 @@ package com.dailyinvention.wordpressthemechanger;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.HashMap;
+
 import org.xmlrpc.android.XMLRPCClient;
 import org.xmlrpc.android.XMLRPCException;
-import android.annotation.SuppressLint;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
@@ -33,9 +34,16 @@ public class Client extends Activity {
 	  
 	  Button[] buttons = new Button[count];
 	  
-	  for(String key: getDataMethod()) {
+	  for(final String key: getDataMethod()) {
 	  		buttons[i] = new Button(this);
 	  		buttons[i].setText(key);
+	  		buttons[i].setOnClickListener(new View.OnClickListener() {
+
+	  	       @Override
+	  	       public void onClick(View linear) {
+	  	    	 switchTheme(key); 
+	  	       }
+	  	     });
 	  		linear.addView(buttons[i]);
 	  		++i;
       }
@@ -43,7 +51,21 @@ public class Client extends Activity {
       }
       //TextViewtextView.setText(getDataMethod());
     
-     
+    private void switchTheme(String themeName) {
+    	try {
+			XMLRPCClient client = new XMLRPCClient(new URL("http://test-wp.apache.local/xmlrpc.php"));
+			String[] params = {"admin","password",themeName};
+			String result = (String) client.call("themes.switchThemes",params);
+    	} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (XMLRPCException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    	
+    }
 
 	private String[] getDataMethod() {
         String[] keys = null;
