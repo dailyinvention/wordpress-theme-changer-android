@@ -12,11 +12,14 @@ import org.xmlrpc.android.XMLRPCException;
 
 import android.app.Activity;
 import android.graphics.LightingColorFilter;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
+import android.widget.TextView;
 
 
 public class Client extends Activity {
@@ -42,26 +45,39 @@ public class Client extends Activity {
 	  for(final String[] key: getDataMethod(url, username, password)) {
 	  		buttons[i] = new Button(this);
 	  		String active_theme = (String) getActiveTheme(url, username, password);
-	  		Log.i("Active Theme", key + ":" + active_theme);
+	  		//Log.i("Active Theme", key + ":" + active_theme);
+	  		Log.i("Button Number", Integer.toString(i));
 	  		if (key[1].equals(active_theme)) {
 	  			
-	  			buttons[i].getBackground().setColorFilter(new LightingColorFilter(0xFFFFFFFF, 0xDAA52000));
+	  			checkButton(buttons[i],"active");
 	  		}
+	  		
 	  		
 	  		buttons[i].setText(key[1]);
 	  		
-	  		final Object single_button = (Object) buttons[i];	
-	  		((View) single_button).setOnClickListener(new View.OnClickListener() {
 	  		
-	  	       @Override
-	  	       public void onClick(View linear) {  
-	  	    	 ((View) single_button).getBackground().setColorFilter(new LightingColorFilter(0xFFFFFFFF, 0xDAA52000));  
-	  	    	 switchTheme(key[0], url, username, password); 
+	  			
+	  		((View) buttons[i]).setOnClickListener(new View.OnClickListener() {
+	  		
+	  	       
+
+			@Override
+	  	       public void onClick(View clicked_button) {
+				Drawable image = getBaseContext().getResources().getDrawable( R.drawable.check );
+	    		image.setBounds( 0, 0, 30, 30 );
+				for(int n=0; n < (buttons.length); ++n) {
+					checkButton(buttons[n],"inactive");
+				}
+				
+				checkButton(clicked_button,"active");
+				
+	  	         switchTheme(key[0], url, username, password); 
 	  	       }
 	  	     });
 	  		linear.addView(buttons[i]);
 	  		++i;
       }
+	  		
     	    setContentView(linear);
       }
       //TextViewtextView.setText(getDataMethod());
@@ -82,6 +98,23 @@ public class Client extends Activity {
 		return theme_name;
     		
     }
+    
+    private void checkButton(View button, String status) {
+    	button.getBackground().setColorFilter(null);
+    	if (status.equals("active")) {
+    		//button.setBackgroundResource(R.drawable.check);
+    		Drawable image = getBaseContext().getResources().getDrawable( R.drawable.check );
+    		image.setBounds( 0, 0, 30, 30 );
+    		((TextView) button).setCompoundDrawables( null, null, image, null );
+    		Log.i("Button status", "active");
+    	}
+    	else {
+    		((TextView) button).setCompoundDrawables( null, null, null, null );
+    	}
+    	
+    }
+    
+
     
     private void switchTheme(String themeName, String url, String username, String password) {
     	try {
