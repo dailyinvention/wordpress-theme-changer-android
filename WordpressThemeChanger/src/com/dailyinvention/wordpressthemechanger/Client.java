@@ -32,12 +32,12 @@ public class Client extends Activity {
       findViewById(R.id.text_view);
       LinearLayout linear = new LinearLayout(this);
 	  linear.setOrientation(LinearLayout.VERTICAL);       
-	  int count = getDataMethod(url, username, password).length;
+	  int count = getThemes(url, username, password).length;
 	  int i = 0;
 	  
 	  final Button[] buttons = new Button[count];
 	  
-	  for(final String[] key: getDataMethod(url, username, password)) {
+	  for(final String[] key: getThemes(url, username, password)) {
 	  		buttons[i] = new Button(this);
 	  		String active_theme = (String) getActiveTheme(url, username, password);
 	  		
@@ -114,7 +114,7 @@ public class Client extends Activity {
     	
     }
 
-	private String[][] getDataMethod(String url, String username, String password) {
+	private String[][] getThemes(String url, String username, String password) {
         String[][] keys = null;
         
         try {
