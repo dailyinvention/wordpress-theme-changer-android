@@ -11,14 +11,11 @@ import org.xmlrpc.android.XMLRPCClient;
 import org.xmlrpc.android.XMLRPCException;
 
 import android.app.Activity;
-import android.graphics.LightingColorFilter;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 
 
@@ -30,9 +27,7 @@ public class Client extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_client);
-         
-        //uri = URI.create("http://test-wp.apache.local/xmlrpc.php");
+        
          
       findViewById(R.id.text_view);
       LinearLayout linear = new LinearLayout(this);
@@ -45,22 +40,15 @@ public class Client extends Activity {
 	  for(final String[] key: getDataMethod(url, username, password)) {
 	  		buttons[i] = new Button(this);
 	  		String active_theme = (String) getActiveTheme(url, username, password);
-	  		//Log.i("Active Theme", key + ":" + active_theme);
-	  		Log.i("Button Number", Integer.toString(i));
+	  		
 	  		if (key[1].equals(active_theme)) {
 	  			
 	  			checkButton(buttons[i],"active");
 	  		}
 	  		
-	  		
-	  		buttons[i].setText(key[1]);
-	  		
-	  		
-	  			
+	  		buttons[i].setText(key[1]);	
 	  		((View) buttons[i]).setOnClickListener(new View.OnClickListener() {
 	  		
-	  	       
-
 			@Override
 	  	       public void onClick(View clicked_button) {
 				Drawable image = getBaseContext().getResources().getDrawable( R.drawable.check );
@@ -70,20 +58,19 @@ public class Client extends Activity {
 				}
 				
 				checkButton(clicked_button,"active");
+				switchTheme(key[0], url, username, password);
 				
-	  	         switchTheme(key[0], url, username, password); 
 	  	       }
 	  	     });
+	  		
 	  		linear.addView(buttons[i]);
 	  		++i;
       }
-	  		
     	    setContentView(linear);
       }
-      //TextViewtextView.setText(getDataMethod());
+    
     private String getActiveTheme(String url, String username, String password) {
     	String theme_name = null;
-    	
     	try {
 			XMLRPCClient client = new XMLRPCClient(new URL(url));
 			theme_name = (String) client.call("themes.getActiveTheme",username, password);
@@ -100,21 +87,16 @@ public class Client extends Activity {
     }
     
     private void checkButton(View button, String status) {
-    	button.getBackground().setColorFilter(null);
     	if (status.equals("active")) {
-    		//button.setBackgroundResource(R.drawable.check);
     		Drawable image = getBaseContext().getResources().getDrawable( R.drawable.check );
     		image.setBounds( 0, 0, 30, 30 );
     		((TextView) button).setCompoundDrawables( null, null, image, null );
-    		Log.i("Button status", "active");
     	}
     	else {
     		((TextView) button).setCompoundDrawables( null, null, null, null );
     	}
     	
     }
-    
-
     
     private void switchTheme(String themeName, String url, String username, String password) {
     	try {
@@ -138,8 +120,6 @@ public class Client extends Activity {
         try {
         	XMLRPCClient client = new XMLRPCClient(new URL(url));
             HashMap<String,Object> result = (HashMap<String,Object>) client.call("themes.getThemes",username,password);
-            //keys = new String[result.keySet().toArray().length];
-            //Log.i("Count",Integer.toString(result.values().toArray().length));
             //keys = result.values().toArray(new String[result.values().toArray().length]);
             String[][] arr = new String[result.size()][2];
             Set entries = result.entrySet();
@@ -157,14 +137,12 @@ public class Client extends Activity {
             }
             keys = arr;
         } catch (XMLRPCException e) {
-            Log.w("XMLRPC Test", "Error", e);
             keys = new String[1][1];
             keys[0][1] = "XMLRPC error" + e;
         } catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}       
-        //return text;
         return keys;
     }
 }
