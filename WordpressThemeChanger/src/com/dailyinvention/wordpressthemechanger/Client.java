@@ -11,27 +11,46 @@ import org.xmlrpc.android.XMLRPCClient;
 import org.xmlrpc.android.XMLRPCException;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 
 public class Client extends Activity {
 	String url = (String)"http://test-wp.apache.local/xmlrpc.php";
 	String username = (String)"admin";
-	String password = (String)"password";
+	String password = (String)"Uncledat03";
      
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_client);
         
-         
-      findViewById(R.id.text_view);
-      LinearLayout linear = new LinearLayout(this);
-	  linear.setOrientation(LinearLayout.VERTICAL);       
+        ImageButton add_blog = (ImageButton) findViewById(R.id.add_blog);
+        
+        add_blog.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View add_button) {
+				startActivity(new Intent(Client.this, AddBlogs.class));
+				
+			}
+		});
+        
+        
+        ViewGroup linear = (ViewGroup) findViewById(R.id.framework);
+      
+      //LinearLayout linear = new LinearLayout(this);
+	  //linear.setOrientation(LinearLayout.VERTICAL);
+	  //linear.setPadding(0, 50, 0, 0);
+	  
+	  
 	  int count = getThemes(url, username, password).length;
 	  int i = 0;
 	  
@@ -66,7 +85,9 @@ public class Client extends Activity {
 	  		linear.addView(buttons[i]);
 	  		++i;
       }
-    	    setContentView(linear);
+	        // this.addView(this);
+	  //setContentView(linear);
+    	    
       }
     
     private String getActiveTheme(String url, String username, String password) {
@@ -95,7 +116,6 @@ public class Client extends Activity {
     	else {
     		((TextView) button).setCompoundDrawables( null, null, null, null );
     	}
-    	
     }
     
     private void switchTheme(String themeName, String url, String username, String password) {
@@ -110,8 +130,6 @@ public class Client extends Activity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-    	
-    	
     }
 
 	private String[][] getThemes(String url, String username, String password) {
