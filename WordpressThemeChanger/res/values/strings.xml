@@ -5,6 +5,11 @@
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
     <string name="add_blog_title">Add your blog.</string>
+    <string-array name="http">
+        <item>https://</item>
+        <item>http://</item>
+    </string-array>
+    <string name="spinner_prompt">Select Blog</string>
     
 
 </resources>

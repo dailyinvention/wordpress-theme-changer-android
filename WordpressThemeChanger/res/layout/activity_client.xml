@@ -7,13 +7,90 @@
     android:contentDescription="Add Blog"
     android:orientation="vertical" >
 
-<ImageButton
-    android:id="@+id/add_blog"
-    style="@style/AppBaseTheme"
-    android:layout_width="40dp"
-    android:layout_height="40dp"
-    android:layout_gravity="right"
-    android:layout_marginBottom="5dp"
-    android:src="@drawable/add_button" />
+    <LinearLayout
+        android:id="@+id/title_layout"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@drawable/title_style" >
+
+        <ImageView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"
+            android:src="@drawable/title" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/header_layout"
+        android:layout_width="match_parent"
+        android:layout_height="38dp" >
+
+        <TextView
+            android:id="@+id/blog_selector_label"
+            android:layout_width="30dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:background="@drawable/other_style"
+            android:paddingTop="10dp"
+            android:text=" Selected Blog:" />
+
+        <Spinner
+            android:id="@+id/blog_selector"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:background="@drawable/spinner_color"
+            android:paddingLeft="10dp"
+            android:prompt="@string/spinner_prompt"
+            android:textColor="@color/primary_text_dark_focused"
+            android:drawableRight="@drawable/spinner_arrow" 
+            android:itemTextAppearance="@color/primary_text_dark_focused"
+             />
+		
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/modify_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="0dp" >
+
+        <Button
+            android:id="@+id/add_blog"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="fill_parent"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_border"
+            android:drawableLeft="@drawable/add_button_final"
+            android:height="30dp"
+            android:textColor="#FFFFFF"
+            android:text=" Add Blog" />
+
+        <Button
+            android:id="@+id/remove_blog"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="fill_parent"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_border"
+            android:drawableLeft="@drawable/remove_button_final"
+            android:height="30dp"
+            android:textColor="#FFFFFF"
+            android:text="Remove Blog" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/button_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical" >
+
+    </LinearLayout>
 
 </LinearLayout>
