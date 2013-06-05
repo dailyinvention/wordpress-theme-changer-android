@@ -7,49 +7,63 @@
     android:contentDescription="Add Blog"
     android:orientation="vertical" >
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/title_layout"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:background="@drawable/title_style" >
+        android:background="@drawable/title_style"
+        android:orientation="horizontal" >
 
         <ImageView
             android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="200dp"
+            android:layout_height="59dp"
             android:paddingLeft="10dp"
-            android:paddingTop="10dp"
-            android:src="@drawable/title" />
+            android:paddingTop="0dp"
+            android:src="@drawable/title"
+            android:layout_marginTop="-5dp"/>
 
-    </LinearLayout>
+        <ImageButton
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:id="@+id/info"
+                android:src="@drawable/info"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="10dp" />
+
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/header_layout"
         android:layout_width="match_parent"
-        android:layout_height="38dp" >
+        android:layout_height="50dp" >
 
         <TextView
             android:id="@+id/blog_selector_label"
-            android:layout_width="30dp"
-            android:layout_height="fill_parent"
+            android:layout_width="wrap_content"
+            android:width="5dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/other_style"
-            android:paddingTop="10dp"
-            android:text=" Selected Blog:" />
+            android:text=" Blog:"
+            android:paddingLeft="10dp"
+            android:paddingTop="15dp"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginTop="-4dp"
+            android:height="50dp"
+            android:paddingBottom="10dp"/>
 
         <Spinner
             android:id="@+id/blog_selector"
             android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
+            android:layout_height="50dp"
             android:layout_weight="1"
+            android:layout_marginTop="-2dp"
             android:background="@drawable/spinner_color"
-            android:paddingLeft="10dp"
-            android:prompt="@string/spinner_prompt"
-            android:textColor="@color/primary_text_dark_focused"
-            android:drawableRight="@drawable/spinner_arrow" 
-            android:itemTextAppearance="@color/primary_text_dark_focused"
-             />
-		
+            android:textColor = "#000000"
+            android:padding="10dp"/>
     </LinearLayout>
 
     <LinearLayout
@@ -64,9 +78,9 @@
             android:layout_width="fill_parent"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:background="@drawable/button_border"
+            android:background="@drawable/button"
             android:drawableLeft="@drawable/add_button_final"
-            android:height="30dp"
+            android:height="50dp"
             android:textColor="#FFFFFF"
             android:text=" Add Blog" />
 
@@ -76,9 +90,9 @@
             android:layout_width="fill_parent"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:background="@drawable/button_border"
+            android:background="@drawable/button"
             android:drawableLeft="@drawable/remove_button_final"
-            android:height="30dp"
+            android:height="50dp"
             android:textColor="#FFFFFF"
             android:text="Remove Blog" />
 

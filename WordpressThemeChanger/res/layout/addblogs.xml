@@ -2,27 +2,71 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/blog_selector_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/add_blog_title"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+    <RelativeLayout
+            android:id="@+id/title_layout"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@drawable/title_style"
+            android:orientation="horizontal" >
+
+        <ImageView
+                android:id="@+id/title"
+                android:layout_width="200dp"
+                android:layout_height="59dp"
+                android:paddingLeft="10dp"
+                android:paddingTop="0dp"
+                android:src="@drawable/title"
+                android:layout_marginTop="-5dp"/>
+
+        <ImageButton
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:id="@+id/info"
+                android:src="@drawable/info"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="10dp" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+            android:id="@+id/add_blog_header_layout"
+            android:layout_width="match_parent"
+            android:layout_height="38dp" >
+
+        <TextView
+                android:id="@+id/add_title_label"
+                android:layout_width="30dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:background="@drawable/other_style"
+                android:paddingTop="5dp"
+                android:paddingLeft="15dp"
+                android:textSize="18sp"
+                android:text="@string/add_blog_title" />
+
+    </LinearLayout>
+
+    <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" android:orientation="vertical" android:padding="15dp"
+            android:layout_margin="10dp" android:background="#6f7e82">
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Blog Name:"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium" android:textSize="16sp"
+        android:textColor="#FFFFFF"/>
 
     <EditText
         android:id="@+id/blog_name"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10" >
+        android:layout_height="40dp"
+        android:ems="10" android:textSize="15sp" android:height="20dp">
 
         <requestFocus />
     </EditText>
@@ -32,23 +76,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Blog URL:"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium" android:textSize="16sp"
+        android:textColor="#FFFFFF"/>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content" android:layout_marginBottom="20dp">
 
         <Spinner
             android:id="@+id/http_selector"
-            android:layout_width="116dp"
-            android:layout_height="wrap_content"
+            android:layout_width="180dp"
+            android:layout_height="40dp"
             android:layout_weight="1"
             android:entries="@array/http" />
 
         <EditText
             android:id="@+id/blog_url"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_weight="1"
             android:ems="10" />
 
@@ -59,12 +104,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Username:"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium" android:textSize="16sp"
+        android:textColor="#FFFFFF"/>
 
     <EditText
         android:id="@+id/username"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:ems="10" />
 
     <TextView
@@ -72,14 +118,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Password:"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium" android:textSize="16sp"
+        android:textColor="#FFFFFF"/>
 
     <EditText
         android:id="@+id/password"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:ems="10"
-        android:inputType="textPassword" />
+        android:inputType="textPassword" android:layout_marginBottom="20dp"/>
 
     <LinearLayout
         android:id="@+id/form_controls"
@@ -97,6 +144,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Cancel" />
+
+    </LinearLayout>
 
     </LinearLayout>
 

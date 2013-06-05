@@ -4,12 +4,13 @@
     <string name="app_name">WordpressThemeChanger</string>
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
-    <string name="add_blog_title">Add your blog.</string>
+    <string name="add_blog_title">Add a Wordpress Blog</string>
     <string-array name="http">
         <item>https://</item>
         <item>http://</item>
     </string-array>
     <string name="spinner_prompt">Select Blog</string>
+    <string name="about_message">This app and it\'s Wordpress plugin were both developed by Stefan Holodnick.\n\nWP Theme Changrr is not an offical Wordpress application.\n\n<b>WP Theme Changrr Site:</b> http://themechangrr.dailyinvention.com\n\n<b>Developer Blog:</b> http://blog.dailyinvention.com\n\nEncryption provided by SQLCipher: http://sqlcipher.net/</string>
     
 
 </resources>
