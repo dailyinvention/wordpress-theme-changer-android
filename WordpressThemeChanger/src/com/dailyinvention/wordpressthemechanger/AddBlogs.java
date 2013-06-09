@@ -75,17 +75,12 @@ public class AddBlogs extends Activity {
             setContentView(R.layout.addblogs);
         
 	}
+    
 	
 	protected void onResume() {
     	super.onResume();
     	
     	SQLiteDatabase.loadLibs(this);
-        eventsData = new EventDataSQLHelper(this);
-        
-        SQLiteDatabase eventsDbase = eventsData.getReadableDatabase(Globals.PASSWORD_SECRET);
-		   
-	    Cursor cursor = getEvents(eventsDbase);
-	    showEvents(cursor);
 
         ImageButton info = (ImageButton) findViewById(R.id.info);
         Button cancel_add = (Button) findViewById(R.id.cancel);
@@ -131,10 +126,11 @@ public class AddBlogs extends Activity {
 			
 			@Override
 			public void onClick(View cancel_add) {
+                finish();
 				Intent intent= new Intent(AddBlogs.this, Client.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP);
 				startActivity(intent);
-				
+
 			    
 				
 			}
@@ -284,7 +280,7 @@ public class AddBlogs extends Activity {
             dialog.show();
         }
         protected String doInBackground(String... blogValue) {
-
+        final EventDataSQLHelper eventsData = new EventDataSQLHelper(AddBlogs.this);
         SQLiteDatabase db = eventsData.getWritableDatabase(Globals.PASSWORD_SECRET);
         Log.i("SQL Values", blogValue[0] + ":" + blogValue[1] + blogValue[2] + ":" + blogValue[3] + blogValue[4] + ":" + blogValue[5]);
         ContentValues values = new ContentValues();
@@ -305,7 +301,7 @@ public class AddBlogs extends Activity {
 
         protected void onPostExecute(String result) {
             dialog.dismiss();
-
+            finish();
             Intent intent= new Intent(AddBlogs.this, Client.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP);
             startActivity(intent);

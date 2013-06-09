@@ -18,7 +18,9 @@ import android.provider.Settings;
 import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -27,6 +29,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -56,21 +61,31 @@ public class Client extends Activity {
     String[][] themes = null;
     String activeTheme = null;
     ProgressDialog dialog;
-    //boolean selectValue = false;
 
-     
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_client);
         InitializeSQLCipher();
 
-        
-        
+
+
     }
-    
+
+    protected void onStop(){
+        super.onStop();
+        if (this.isFinishing()){
+            finish();
+        }
+    }
+
+
     protected void onResume() {
     	super.onResume();
+
+
 
         if(isOnline()) {
 
@@ -82,6 +97,7 @@ public class Client extends Activity {
         Button remove_blog = (Button) findViewById(R.id.remove_blog);
         Spinner theme_selector = (Spinner) findViewById(R.id.blog_selector);
 
+        info.setBackgroundColor(Color.TRANSPARENT);
         info.setOnClickListener(new OnClickListener() {
 
                 @Override
@@ -234,9 +250,10 @@ public class Client extends Activity {
             AlertDialog alert = builder.create();
             alert.show();
         }
+
 	    // Normal case behavior follows
 	}
-    
+
     private class getActiveTheme extends AsyncTask<String,Void,String> {
         String theme_name;
         protected String doInBackground(String... urls) {
@@ -244,7 +261,7 @@ public class Client extends Activity {
     	try {
 			XMLRPCClient client = new XMLRPCClient(new URL(url));
 			theme_name = (String) client.call("themes.getActiveTheme",username, password);
-			
+
     	} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -259,9 +276,9 @@ public class Client extends Activity {
         protected void onPostExecute(String result) {
             addButtons();
         }
-    		
+
     }
-    
+
     private void checkButton(View button, String status) {
     	if (status.equals("active")) {
     		Drawable image = getBaseContext().getResources().getDrawable( R.drawable.check );
@@ -275,7 +292,7 @@ public class Client extends Activity {
     		((TextView) button).setCompoundDrawables( null, null, null, null );
     	}
     }
-    
+
     private class switchTheme extends AsyncTask<String,Void,Void> {
         protected void onPreExecute() {
 
@@ -408,7 +425,7 @@ public class Client extends Activity {
 
     private void getBlogs(){
         List<String> blogs = new ArrayList<String>();
-         
+
         // Select All Query
         String selectQuery = "SELECT  * FROM " + Globals.SETTINGS_TABLE + " WHERE selected='0'";
         //String selectFirstQuery = "SELECT  * FROM " + Globals.SETTINGS_TABLE + " WHERE selected='1'";
@@ -417,7 +434,7 @@ public class Client extends Activity {
         Cursor cursor = dbase.rawQuery(selectQuery, null);
         //Cursor first = dbase.rawQuery(selectFirstQuery, null);
         String[] first = getSelectedBlog();
-      
+
         // looping through all rows and adding to list
 
         blogs.add(first[3]);
@@ -426,18 +443,18 @@ public class Client extends Activity {
         url = first[2];
 
 
-        
+
         if (cursor.moveToFirst()) {
             do {
                 blogs.add(cursor.getString(3));
             } while (cursor.moveToNext());
         }
-         
+
         // closing connection
         cursor.close();
-        
+
         dbase.close();
-         
+
         // returning lables
         //return blogs;
 
@@ -540,8 +557,12 @@ public class Client extends Activity {
 
     private void addButtons() {
 
-	        ViewGroup linear = (ViewGroup) findViewById(R.id.button_layout);
+
+
+            ViewGroup linear = (ViewGroup) findViewById(R.id.button_layout);
+            ScrollView linearScroll = (ScrollView) findViewById(R.id.scroll_layout);
             linear.removeAllViews();
+
 
 
             //LinearLayout linear = new LinearLayout(this);
@@ -560,17 +581,17 @@ public class Client extends Activity {
 
 
             int i = 0;
-	  
+
 	        final Button[] buttons = new Button[count];
 
 	        for(final String[] key: themes) {
 	  		    buttons[i] = new Button(this);
                 Log.i("Theme/Active Theme", key[1] + ":" + activeTheme);
 	  		    if (key[1].equals(activeTheme)) {
-	  			
+
 	  			    checkButton(buttons[i],"active");
 	  		    }
-	  		
+
 	  		    buttons[i].setText(key[1]);
 	  		    buttons[i].setOnClickListener(new View.OnClickListener() {
 
@@ -589,13 +610,16 @@ public class Client extends Activity {
 
                     }
                 });
-	  		
+
 	  		    linear.addView(buttons[i]);
 	  		    ++i;
 
             }
 
-            dialog.dismiss();
+
+
+
+        dialog.dismiss();
 
 	}
 
@@ -610,21 +634,23 @@ public class Client extends Activity {
         }
         return false;
     }
-	
-	private void InitializeSQLCipher() {
-        SQLiteDatabase.loadLibs(this);
-        File databaseFile = getDatabasePath(Globals.DATABASE_NAME);
-        databaseFile.mkdirs();
-        databaseFile.delete();
-        SQLiteDatabase database = SQLiteDatabase.openOrCreateDatabase(databaseFile, Globals.PASSWORD_SECRET, null);
-        
-        
-        	database.execSQL("create table accounts (id integer primary key autoincrement, url text, homeURL text, blogName text, username text, password text, blogID integer, selected integer);");
-        	database.execSQL("insert into accounts (url,homeURL,blogName,username,password,blogID,selected) values('http://blog.dailyinvention.com/','http://blog.dailyinvention.com/xmlrpc.php','Theme Changrr Site','bobafett','letmein59208xpq',1,1)");
-        
-       database.close();
 
-   
-	}
+	private void InitializeSQLCipher() {
+
+            SQLiteDatabase.loadLibs(this);
+            File databaseFile = getDatabasePath(Globals.DATABASE_NAME);
+
+            if(!databaseFile.exists()) {
+            databaseFile.mkdirs();
+            databaseFile.delete();
+            SQLiteDatabase database = SQLiteDatabase.openOrCreateDatabase(databaseFile, Globals.PASSWORD_SECRET, null);
+
+
+            database.execSQL("create table accounts (id integer primary key autoincrement, url text, homeURL text, blogName text, username text, password text, blogID integer, selected integer);");
+            database.execSQL("insert into accounts (url,homeURL,blogName,username,password,blogID,selected) values('http://blog.dailyinvention.com/','http://blog.dailyinvention.com/xmlrpc.php','Theme Changrr Site','bobafett','letmein59208xpq',1,1)");
+
+            database.close();
+            }
+    }
 
 }
