@@ -39,67 +39,76 @@ public class EventDataSQLHelper extends SQLiteOpenHelper {
 
 		String sql = null;
 		try {
-            if (db.getVersion() < 1) { // user is new install
+            switch (db.getVersion()) {
+
+                case 0:
                 db.execSQL(ADD_BLOGID);
                 db.execSQL(UPDATE_BLOGID);
                 db.execSQL(ADD_HOME_URL);
-                
                 db.setVersion(DATABASE_VERSION); // set to latest revision
-            } else if (db.getVersion() == 1) { // v1.0 or v1.0.1
+                break;
+                case 1:
                 db.execSQL(ADD_BLOGID);
                 db.execSQL(UPDATE_BLOGID);
                 db.execSQL(ADD_HOME_URL);
-                
                 db.setVersion(DATABASE_VERSION);
-            } else if (db.getVersion() == 2) {
-                db.execSQL(ADD_HOME_URL);
-                
-                db.setVersion(DATABASE_VERSION);
-            } else if (db.getVersion() == 3) {
-                db.execSQL(ADD_HOME_URL);
-                
-                db.setVersion(DATABASE_VERSION);
-            } else if (db.getVersion() == 4) {
-                db.execSQL(ADD_HOME_URL);
-                
-                db.setVersion(DATABASE_VERSION);
-            } else if (db.getVersion() == 5) {
-                db.execSQL(ADD_HOME_URL);
-                
-                db.setVersion(DATABASE_VERSION);
-            } else if (db.getVersion() == 6) {
-                db.execSQL(ADD_HOME_URL);
-                
-                db.setVersion(DATABASE_VERSION);
-            } else if (db.getVersion() == 7) {
-                db.execSQL(ADD_HOME_URL);
-                
-                db.setVersion(DATABASE_VERSION);
-            } else if (db.getVersion() == 8) {
-                db.execSQL(ADD_HOME_URL);
-                
-                db.setVersion(DATABASE_VERSION);
-            } else if (db.getVersion() == 9) {
-                db.execSQL(ADD_HOME_URL);
-                
-                db.setVersion(DATABASE_VERSION);
-            } else if (db.getVersion() == 10) {
+                break;
+                case 2:
                 db.execSQL(ADD_HOME_URL);
                 db.setVersion(DATABASE_VERSION);
-            } else if (db.getVersion() == 11) {
+                break;
+                case 3:
                 db.execSQL(ADD_HOME_URL);
                 db.setVersion(DATABASE_VERSION);
-            } else if (db.getVersion() == 12) {
+                break;
+                case 4:
                 db.execSQL(ADD_HOME_URL);
                 db.setVersion(DATABASE_VERSION);
-            } else if (db.getVersion() == 13) {
+                break;
+                case 5:
                 db.execSQL(ADD_HOME_URL);
                 db.setVersion(DATABASE_VERSION);
-            } else if (db.getVersion() == 14) {
+                break;
+                case 6:
+                db.execSQL(ADD_HOME_URL);
                 db.setVersion(DATABASE_VERSION);
-            } else if (db.getVersion() == 15) {
+                break;
+                case 7:
+                db.execSQL(ADD_HOME_URL);
                 db.setVersion(DATABASE_VERSION);
+                break;
+                case 8:
+                db.execSQL(ADD_HOME_URL);
+                db.setVersion(DATABASE_VERSION);
+                break;
+                case 9:
+                db.execSQL(ADD_HOME_URL);
+                db.setVersion(DATABASE_VERSION);
+                break;
+                case 10:
+                db.execSQL(ADD_HOME_URL);
+                db.setVersion(DATABASE_VERSION);
+                break;
+                case 11:
+                db.execSQL(ADD_HOME_URL);
+                db.setVersion(DATABASE_VERSION);
+                break;
+                case 12:
+                db.execSQL(ADD_HOME_URL);
+                db.setVersion(DATABASE_VERSION);
+                break;
+                case 13:
+                db.execSQL(ADD_HOME_URL);
+                db.setVersion(DATABASE_VERSION);
+                break;
+                case 14:
+                db.setVersion(DATABASE_VERSION);
+                break;
+                case 15:
+                db.setVersion(DATABASE_VERSION);
+                break;
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }

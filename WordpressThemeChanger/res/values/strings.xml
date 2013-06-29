@@ -10,7 +10,7 @@
         <item>http://</item>
     </string-array>
     <string name="spinner_prompt">Select Blog</string>
-    <string name="about_message">This app and it\'s Wordpress plugin were both developed by Stefan Holodnick.\n\nWP Theme Changrr is not an offical Wordpress application.\n\n<b>WP Theme Changrr Site:</b> http://themechangrr.dailyinvention.com\n\n<b>Developer Blog:</b> http://blog.dailyinvention.com\n\nEncryption provided by SQLCipher: http://sqlcipher.net/</string>
+    <string name="about_message">This app and its Wordpress plugin were both developed by Stefan Holodnick.\n\nWP Theme Changrr is not an offical Wordpress application.\n\n<b>WP Theme Changrr Site:</b> http://themechangrr.dailyinvention.com\n\n<b>Developer Blog:</b> http://blog.dailyinvention.com\n\nEncryption provided by SQLCipher: http://sqlcipher.net/</string>
     
 
 </resources>

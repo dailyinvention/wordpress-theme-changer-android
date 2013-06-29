@@ -3,25 +3,18 @@ package com.dailyinvention.wordpressthemechanger;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.StrictMode;
-import android.provider.Settings;
+import android.os.PowerManager;
 import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
-import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -29,9 +22,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -45,12 +35,10 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Vector;
 
 
 
@@ -60,7 +48,9 @@ public class Client extends Activity {
 	String password;
     String[][] themes = null;
     String activeTheme = null;
+    String blogName = null;
     ProgressDialog dialog;
+    SQLiteDatabase dbase;
 
 
 
@@ -70,28 +60,6 @@ public class Client extends Activity {
         setContentView(R.layout.activity_client);
         InitializeSQLCipher();
 
-
-
-    }
-
-    protected void onStop(){
-        super.onStop();
-        if (this.isFinishing()){
-            finish();
-        }
-    }
-
-
-    protected void onResume() {
-    	super.onResume();
-
-
-
-        if(isOnline()) {
-
-
-         getBlogs();
-
         ImageButton info = (ImageButton) findViewById(R.id.info);
         Button add_blog = (Button) findViewById(R.id.add_blog);
         Button remove_blog = (Button) findViewById(R.id.remove_blog);
@@ -100,35 +68,34 @@ public class Client extends Activity {
         info.setBackgroundColor(Color.TRANSPARENT);
         info.setOnClickListener(new OnClickListener() {
 
-                @Override
-                public void onClick(View infoButton) {
+            @Override
+            public void onClick(View infoButton) {
 
-                    final TextView message = new TextView(Client.this);
-                    message.setTextColor(Color.WHITE);
-                    message.setPadding(10,10,10,10);
+                final TextView message = new TextView(Client.this);
+                message.setTextColor(Color.WHITE);
+                message.setPadding(10,10,10,10);
 
-                    // i.e.: R.string.dialog_message =>
-                    // "Test this dialog following the link to dtmilano.blogspot.com"
-                    final SpannableString s =
-                            new SpannableString(Client.this.getText(R.string.about_message));
-                    Linkify.addLinks(s, Linkify.WEB_URLS);
-                    message.setText(s);
-                    message.setMovementMethod(LinkMovementMethod.getInstance());
-                    message.setLinkTextColor(Color.LTGRAY);
 
-                    AlertDialog.Builder popupBuilder = new AlertDialog.Builder(Client.this);
-                        popupBuilder.setTitle("About")
-                            .setCancelable(true)
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
+                final SpannableString s =
+                        new SpannableString(Client.this.getText(R.string.about_message));
+                Linkify.addLinks(s, Linkify.WEB_URLS);
+                message.setText(s);
+                message.setMovementMethod(LinkMovementMethod.getInstance());
+                message.setLinkTextColor(Color.LTGRAY);
 
-                                    dialog.cancel();
+                AlertDialog.Builder popupBuilder = new AlertDialog.Builder(Client.this);
+                popupBuilder.setTitle("About")
+                        .setCancelable(true)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
 
-                                }
-                            })
-                            .setView(message);
-                    AlertDialog aboutMessage =popupBuilder.create();
-                    aboutMessage.show();
+                                dialog.cancel();
+
+                            }
+                        })
+                        .setView(message);
+                AlertDialog aboutMessage =popupBuilder.create();
+                aboutMessage.show();
 
 
             }
@@ -137,14 +104,13 @@ public class Client extends Activity {
 
         add_blog.setOnClickListener(new OnClickListener() {
 
-			@Override
-			public void onClick(View add_button) {
-                //resume = true;
-                //selectValue = false;
-				startActivity(new Intent(Client.this, AddBlogs.class));
+            @Override
+            public void onClick(View add_button) {
 
-			}
-		});
+                startActivity(new Intent(Client.this, AddBlogs.class));
+
+            }
+        });
 
         remove_blog.setOnClickListener(new OnClickListener() {
 
@@ -169,28 +135,28 @@ public class Client extends Activity {
 
                 }
                 else {
-                AlertDialog.Builder removeAlert = new AlertDialog.Builder(Client.this);
-                removeAlert.setTitle("Delete Blog")
-                        .setMessage("Are you sure you want remove \"" + selectedBlog[3] + "\" from your blog list?")
-                        .setCancelable(false)
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
+                    AlertDialog.Builder removeAlert = new AlertDialog.Builder(Client.this);
+                    removeAlert.setTitle("Delete Blog")
+                            .setMessage("Are you sure you want remove \"" + selectedBlog[3] + "\" from your blog list?")
+                            .setCancelable(false)
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
 
-                                removeBlog();
-                                getBlogs();
+                                    removeBlog();
+                                    getBlogs();
 
 
-                            }
-                        })
-                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
+                                }
+                            })
+                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
 
-                                dialog.cancel();
+                                    dialog.cancel();
 
-                            }
-                        });
-                AlertDialog alert = removeAlert.create();
-                alert.show();
+                                }
+                            });
+                    AlertDialog alert = removeAlert.create();
+                    alert.show();
                 }
 
             }
@@ -198,32 +164,40 @@ public class Client extends Activity {
 
 
 
-        //if (selectValue == true) {
-        /*
-        theme_selector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                String selected = parentView.getItemAtPosition(position).toString();
-                setBlog(selected);
+    }
 
-                    new getThemes().execute();
+    protected void onStop(){
+        super.onStop();
+        if (this.isFinishing()){
+            finish();
+        }
+    }
+
+    public void onPause() {
+        super.onPause();
+        dbase.close();
+    }
+
+    public void onResume() {
+
+        super.onResume();
+
+        SQLiteDatabase.loadLibs(this);
+
+        final EventDataSQLHelper eventsData = new EventDataSQLHelper(Client.this);
+        dbase = eventsData.getWritableDatabase(Globals.PASSWORD_SECRET);
 
 
+        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+        boolean isScreenOn = powerManager.isScreenOn();
 
-            }
+        if (isScreenOn) {
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
+        if(CheckConnectivity.isOnline(Client.this)) {
 
 
-                //
-            }
+         getBlogs();
 
-        });
-
-        //}
-        */
-           // new getThemes().execute();
 
 
 
@@ -239,19 +213,18 @@ public class Client extends Activity {
                     .setCancelable(false)
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-
-                            Intent intent = new Intent(Intent.ACTION_MAIN);
-                            intent.addCategory(Intent.CATEGORY_HOME);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent);
+                            dialog.dismiss();
+                            finish();
 
                         }
                     });
-            AlertDialog alert = builder.create();
+
+            final AlertDialog alert = builder.create();
             alert.show();
+
         }
 
-	    // Normal case behavior follows
+        }
 	}
 
     private class getActiveTheme extends AsyncTask<String,Void,String> {
@@ -269,7 +242,14 @@ public class Client extends Activity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        activeTheme = theme_name;
+
+        //if (theme_name != null) {
+            activeTheme = theme_name;
+        //}
+        /* else {
+            activeTheme = null;
+        }
+        */
 		return theme_name;
         }
 
@@ -323,7 +303,7 @@ public class Client extends Activity {
 
 
     public class getThemes extends AsyncTask<String,Void,String> {
-
+        boolean check = true;
 
 
         @Override
@@ -345,43 +325,112 @@ public class Client extends Activity {
         try {
         	XMLRPCClient client = new XMLRPCClient(new URL(url));
             Map<String,Object> returnedThemes = (Map<String, Object>) client.call("themes.getThemes",username,password);
-            String[][] arr = new String[returnedThemes.size()][2];
-            Set<Map.Entry<String,Object>> entries = returnedThemes.entrySet();
-            Iterator<Map.Entry<String,Object>> entriesIterator = entries.iterator();
-            int i = 0;
-            while(entriesIterator.hasNext()){
 
-                Map.Entry<String, Object> mapping = entriesIterator.next();
 
-                arr[i][0] = mapping.getKey();
 
-                Log.i("Key", mapping.getKey());
+            //if ((!returnedThemes.isEmpty())) {
+                String[][] arr = new String[returnedThemes.size()][2];
+                Set<Map.Entry<String,Object>> entries = returnedThemes.entrySet();
+                Iterator<Map.Entry<String,Object>> entriesIterator = entries.iterator();
+                int i = 0;
+                while(entriesIterator.hasNext()){
 
-                arr[i][1] = mapping.getValue().toString();
+                    Map.Entry<String, Object> mapping = entriesIterator.next();
 
-                i++;
+                    arr[i][0] = mapping.getKey();
+
+                    Log.i("Key", mapping.getKey());
+
+                    arr[i][1] = mapping.getValue().toString();
+
+                    i++;
+                }
+
+
+
+                themes = arr;
+            /*
             }
 
-            themes = arr;
+            else {
 
-            //keys = result.values().toArray(new String[result.values().toArray().length]);
+                AlertDialog.Builder builder = new AlertDialog.Builder(Client.this);
+                builder.setTitle("Broken Link")
+                        .setMessage("The blog you want to connect to can not be found.  Maybe the blog was removed, the plugin was disabled, or the username or password were changed.  What would you like to do?")
+                        .setCancelable(false)
+                        .setPositiveButton("Remove Blog", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                finish();
 
+                            }
+                        })
+                        .setNegativeButton("Fix Blog", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                finish();
+
+                            }
+                        });
+
+                final AlertDialog alert = builder.create();
+                alert.show();
+                check = false;
+            }
+
+            */
 
         } catch (XMLRPCException e) {
-            //keys = new String[1][1];
             Log.i("Error", "XMLRPC error" + e);
+            check = false;
+
         } catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
             String result = "Task Completed";
             return result;
         }
 
         protected void onPostExecute(String result) {
 
-            new getActiveTheme().execute();
+             if (check == true) {
+                new getActiveTheme().execute();
+             }
+            else {
+                 dialog.dismiss();
+                 AlertDialog.Builder builder = new AlertDialog.Builder(Client.this);
+                 builder.setTitle("Broken Link")
+                         .setMessage("The blog you want to connect to can not be found.  Maybe the blog was removed, the plugin was disabled, or the username or password were changed.  What would you like to do?")
+                         .setCancelable(false)
+                         .setPositiveButton("Remove Blog", new DialogInterface.OnClickListener() {
+                             public void onClick(DialogInterface dialog, int which) {
+                                 removeBlog();
+                                 getBlogs();
+                                 dialog.dismiss();
 
+                             }
+                         })
+                         .setNegativeButton("Fix Blog", new DialogInterface.OnClickListener() {
+                             public void onClick(DialogInterface dialog, int which) {
+                                 dialog.dismiss();
+                                 Intent intent = new Intent(Client.this, AddBlogs.class);
+                                 intent.putExtra("url", url.replace("/xmlrpc.php",""));
+                                 intent.putExtra("username", username);
+                                 intent.putExtra("blogName", blogName);
+                                 startActivity(intent);
+
+
+
+
+                             }
+                         });
+
+                 final AlertDialog alert = builder.create();
+                 alert.show();
+
+             }
         }
 
 
@@ -391,10 +440,6 @@ public class Client extends Activity {
 
     private String[] getSelectedBlog(){
         String selectedQuery = "SELECT  * FROM " + Globals.SETTINGS_TABLE + " WHERE selected='1'";
-        final EventDataSQLHelper eventsData = new EventDataSQLHelper(this);
-        SQLiteDatabase dbase = eventsData.getReadableDatabase(Globals.PASSWORD_SECRET);
-
-        Cursor selectedRow = dbase.rawQuery(selectedQuery, null);
 
         Integer id = null;
         String url = null;
@@ -403,6 +448,12 @@ public class Client extends Activity {
         String username = null;
         String password = null;
 
+
+
+
+        Cursor selectedRow = dbase.rawQuery(selectedQuery, null);
+
+        try {
         if (selectedRow.moveToFirst()) {
             id = selectedRow.getInt(0);
             url = selectedRow.getString(1);
@@ -412,8 +463,12 @@ public class Client extends Activity {
             password = selectedRow.getString(5);
 
         }
-       selectedRow.close();
-       dbase.close();
+        }
+        finally {
+            selectedRow.close();
+        }
+
+
 
        String[] result = {id.toString(),url,homeURL,blogName,username,password};
 
@@ -426,21 +481,20 @@ public class Client extends Activity {
     private void getBlogs(){
         List<String> blogs = new ArrayList<String>();
 
-        // Select All Query
         String selectQuery = "SELECT  * FROM " + Globals.SETTINGS_TABLE + " WHERE selected='0'";
-        //String selectFirstQuery = "SELECT  * FROM " + Globals.SETTINGS_TABLE + " WHERE selected='1'";
-        final EventDataSQLHelper eventsData = new EventDataSQLHelper(this);
-        SQLiteDatabase dbase = eventsData.getReadableDatabase(Globals.PASSWORD_SECRET);
+
         Cursor cursor = dbase.rawQuery(selectQuery, null);
-        //Cursor first = dbase.rawQuery(selectFirstQuery, null);
+
+        try {
         String[] first = getSelectedBlog();
 
-        // looping through all rows and adding to list
+
 
         blogs.add(first[3]);
         username = first[4];
         password = first[5];
         url = first[2];
+        blogName = first[3];
 
 
 
@@ -449,14 +503,11 @@ public class Client extends Activity {
                 blogs.add(cursor.getString(3));
             } while (cursor.moveToNext());
         }
+        }
+        finally {
+            cursor.close();
+        }
 
-        // closing connection
-        cursor.close();
-
-        dbase.close();
-
-        // returning lables
-        //return blogs;
 
         Spinner spinner = (Spinner) findViewById(R.id.blog_selector);
 
@@ -472,13 +523,34 @@ public class Client extends Activity {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 String selected = parentView.getItemAtPosition(position).toString();
+                    //new getActiveTheme().execute();
+                    // if(activeTheme != null){
+                        new getThemes().execute(selected);
+                    /* }
+                    else {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Client.this);
+                        builder.setTitle("Broken Link")
+                                .setMessage("The blog you want to connect to can not be found.  Maybe the blog was removed, the plugin was disabled, or the username or password were changed.  What would you like to do?")
+                                .setCancelable(false)
+                                .setPositiveButton("Remove Blog", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                        finish();
 
+                                    }
+                                })
+                                .setNegativeButton("Fix Blog", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                        finish();
 
+                                    }
+                                });
 
-                    new getThemes().execute(selected);
+                        final AlertDialog alert = builder.create();
+                        alert.show();
 
-
-
+                    } */
             }
 
             @Override
@@ -502,24 +574,24 @@ public class Client extends Activity {
 
         Log.i("Blogname",blogName);
 
-        final EventDataSQLHelper eventsData = new EventDataSQLHelper(this);
-        SQLiteDatabase dbase = eventsData.getWritableDatabase(Globals.PASSWORD_SECRET);
-
         dbase.execSQL(clearSelectedQuery);
         dbase.execSQL(setQuery);
 
         Cursor getURLFetch = dbase.rawQuery(getQuery, null);
 
-        // looping through all rows and adding to list
+        try {
         if (getURLFetch.moveToFirst()) {
             url = getURLFetch.getString(2);
             username = getURLFetch.getString(4);
             password = getURLFetch.getString(5);
 
         }
+        }
+        finally {
+            getURLFetch.close();
+        }
 
-        getURLFetch.close();
-        dbase.close();
+
 
     }
 
@@ -527,17 +599,15 @@ public class Client extends Activity {
 
         String removeQuery = "DELETE FROM " + Globals.SETTINGS_TABLE + " WHERE selected='1'";
         String lastIDQuery = "SELECT * FROM " + Globals.SETTINGS_TABLE + " ORDER by id DESC LIMIT 1";
-        String[] selectedBlog = getSelectedBlog();
-        int selectedId = Integer.parseInt(selectedBlog[0]) - 1;
 
 
-        final EventDataSQLHelper eventsData = new EventDataSQLHelper(this);
-        SQLiteDatabase dbase = eventsData.getWritableDatabase(Globals.PASSWORD_SECRET);
 
         dbase.execSQL(removeQuery);
         Cursor lastIdFetch = dbase.rawQuery(lastIDQuery, null);
+
+        try {
         Integer lastID = null;
-        // looping through all rows and adding to list
+
         if (lastIdFetch.moveToFirst()) {
             lastID = lastIdFetch.getInt(0);
             url = lastIdFetch.getString(2);
@@ -546,11 +616,13 @@ public class Client extends Activity {
         }
 
         dbase.execSQL("UPDATE " + Globals.SETTINGS_TABLE + " SET selected='1' WHERE id='" + lastID + "'");
+        }
+        finally {
+            lastIdFetch.close();
+        }
 
 
-        // closing connection
-        lastIdFetch.close();
-        dbase.close();
+
 
     }
 
@@ -560,25 +632,9 @@ public class Client extends Activity {
 
 
             ViewGroup linear = (ViewGroup) findViewById(R.id.button_layout);
-            ScrollView linearScroll = (ScrollView) findViewById(R.id.scroll_layout);
             linear.removeAllViews();
 
-
-
-            //LinearLayout linear = new LinearLayout(this);
-	        //linear.setOrientation(LinearLayout.VERTICAL);
-	        //linear.setPadding(0, 50, 0, 0);
-
-
-
-
-
-            //String[][] themes = getThemes();
-
-
 	        Integer count = themes.length;
-
-
 
             int i = 0;
 
@@ -586,7 +642,6 @@ public class Client extends Activity {
 
 	        for(final String[] key: themes) {
 	  		    buttons[i] = new Button(this);
-                Log.i("Theme/Active Theme", key[1] + ":" + activeTheme);
 	  		    if (key[1].equals(activeTheme)) {
 
 	  			    checkButton(buttons[i],"active");
@@ -623,17 +678,6 @@ public class Client extends Activity {
 
 	}
 
-
-
-    public boolean isOnline() {
-        ConnectivityManager cm =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
-            return true;
-        }
-        return false;
-    }
 
 	private void InitializeSQLCipher() {
 
