@@ -22,6 +22,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -349,6 +350,7 @@ public class Client extends Activity {
 
 
                 themes = arr;
+
             /*
             }
 
@@ -691,7 +693,7 @@ public class Client extends Activity {
 
 
             database.execSQL("create table accounts (id integer primary key autoincrement, url text, homeURL text, blogName text, username text, password text, blogID integer, selected integer);");
-            database.execSQL("insert into accounts (url,homeURL,blogName,username,password,blogID,selected) values('http://blog.dailyinvention.com/','http://blog.dailyinvention.com/xmlrpc.php','Theme Changrr Site','bobafett','letmein59208xpq',1,1)");
+            database.execSQL("insert into accounts (url,homeURL,blogName,username,password,blogID,selected) values('https://themechangrr.dailyinvention.com/','https://themechangrr.dailyinvention.com/xmlrpc.php','Theme Changrr Site','bobafett','letmein59208xpq',1,1)");
 
             database.close();
             }
