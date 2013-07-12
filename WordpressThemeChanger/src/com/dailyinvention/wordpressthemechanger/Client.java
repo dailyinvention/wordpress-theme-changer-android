@@ -443,7 +443,7 @@ public class Client extends Activity {
     private String[] getSelectedBlog(){
         String selectedQuery = "SELECT  * FROM " + Globals.SETTINGS_TABLE + " WHERE selected='1'";
 
-        Integer id = null;
+        int id = 0;
         String url = null;
         String homeURL = null;
         String blogName = null;
@@ -472,7 +472,7 @@ public class Client extends Activity {
 
 
 
-       String[] result = {id.toString(),url,homeURL,blogName,username,password};
+       String[] result = {String.valueOf(id),url,homeURL,blogName,username,password};
 
        return result;
 
