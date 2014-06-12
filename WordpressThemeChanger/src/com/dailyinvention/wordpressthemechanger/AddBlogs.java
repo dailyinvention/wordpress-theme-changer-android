@@ -31,6 +31,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.ExecutionException;
 
+//Adds blogs
 
 public class AddBlogs extends Activity {
     SQLiteDatabase dbase;
@@ -40,14 +41,17 @@ public class AddBlogs extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-
+            //Sets layout
             setContentView(R.layout.addblogs);
+
+        //Declare buttons
 
         ImageButton info = (ImageButton) findViewById(R.id.info);
         TextView addTitleLabel = (TextView) findViewById(R.id.add_title_label);
         Button cancel_add = (Button) findViewById(R.id.cancel);
         Button add = (Button) findViewById(R.id.add_blog_button);
 
+        //Declare form fields
         final EditText blogName = (EditText)findViewById(R.id.blog_name);
         final Spinner httpSelect = (Spinner)findViewById(R.id.http_selector);
         final EditText blogUrl = (EditText)findViewById(R.id.blog_url);
@@ -56,6 +60,7 @@ public class AddBlogs extends Activity {
 
         Bundle bundle = getIntent().getExtras();
 
+        //If a blog is broken, change button names
 
         if (bundle != null) {
             cancel_add.setText("Delete");
@@ -70,6 +75,8 @@ public class AddBlogs extends Activity {
             blogUrl.setText(updateUrl);
             username.setText(updateUsername);
         }
+
+        // Infobutton click
 
         info.setOnClickListener(new OnClickListener() {
 
@@ -112,6 +119,8 @@ public class AddBlogs extends Activity {
 
             @Override
             public void onClick(View cancel_add) {
+                // If blog is broken display this alert dialogue
+
                 if (updateBlogName != null) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(AddBlogs.this);
                     builder.setTitle("Delete Blog")
@@ -146,11 +155,13 @@ public class AddBlogs extends Activity {
             }
         });
 
+        // If add button is pressed
+
         add.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View add_view) {
-
+                // Checks for duplicate name
                 String success = "false";
                 String checkSuccess = "false";
                 try {
@@ -164,7 +175,7 @@ public class AddBlogs extends Activity {
                 }
 
                 if(checkSuccess == "false") {
-
+                    // checks to see if blog connection works
                     try {
                         success = new checkBlog()
                                 .execute(httpSelect.getSelectedItem().toString(), blogUrl.getText().toString(), username.getText().toString(), password.getText().toString())
@@ -174,13 +185,16 @@ public class AddBlogs extends Activity {
                     } catch (ExecutionException e) {
                         e.printStackTrace();
                     }
-
+                    // if true, add blog
                     if(success == "true") {
 
                         new addAccount().execute(httpSelect.getSelectedItem().toString() + blogUrl.getText().toString(), httpSelect.getSelectedItem().toString() + blogUrl.getText().toString() + "/xmlrpc.php", blogName.getText().toString(), username.getText().toString(), password.getText().toString(), "1");
 
 
                     }
+
+                    // if false, throw dialogue
+
                     else if (success == "false"){
                         AlertDialog.Builder builder = new AlertDialog.Builder(AddBlogs.this);
                         builder.setTitle("Cannot Connect to Blog")
@@ -210,9 +224,11 @@ public class AddBlogs extends Activity {
 
                 }
 
+                // If fixing blog
+
                 if(checkSuccess == "true") {
 
-
+                    // if blog name to fix is set
                     if (updateBlogName != null) {
 
                         try {
@@ -225,12 +241,18 @@ public class AddBlogs extends Activity {
                             e.printStackTrace();
                         }
 
+                        //check to see if blog exists
+
                         if (success == "true") {
+                            //  Update account
 
                             new addAccount().execute(httpSelect.getSelectedItem().toString() + blogUrl.getText().toString() + "/xmlrpc.php", username.getText().toString(), password.getText().toString());
 
                         }
                         else {
+
+                            // Show can not connect dialogue
+
                             AlertDialog.Builder builder = new AlertDialog.Builder(AddBlogs.this);
                             builder.setTitle("Cannot Connect to Blog")
                                     .setMessage("Unable to connect to Theme Changrr plugin using the blog url of " + httpSelect.getSelectedItem() + blogUrl.getText() + ".  Make sure the Theme Changrr plugin is set up for this blog and the username and password are correct.")
@@ -261,6 +283,9 @@ public class AddBlogs extends Activity {
 
                     }
                     else {
+
+                        // Blog has a duplicate name
+
                         AlertDialog.Builder builder = new AlertDialog.Builder(AddBlogs.this);
                             builder.setTitle("Duplicate Blog Name")
                                 .setMessage("The blog name \"" + blogName.getText().toString() + "\" is already in your list.  Please enter a different blog name.")
@@ -304,7 +329,7 @@ public class AddBlogs extends Activity {
 
 	}	
 
-	
+	// Method that adds account
 	private class addAccount extends AsyncTask<String,Void,String> {
         ProgressDialog dialog;
         protected void onPreExecute() {
@@ -366,6 +391,7 @@ public class AddBlogs extends Activity {
         
     }
 
+    // Checks for duplicate name
 
     private class checkDuplicateName extends AsyncTask<String,Void,String> {
         protected String doInBackground(String... blogName) {
@@ -400,6 +426,7 @@ public class AddBlogs extends Activity {
         }
     }
 
+    // Checks to see if blog exists
 
     private class checkBlog extends AsyncTask<String,Void,String> {
         protected String doInBackground(String... accessValue) {
@@ -429,6 +456,8 @@ public class AddBlogs extends Activity {
         }
 
     }
+
+    // Removes the blog
 
     private void removeBlog(){
 

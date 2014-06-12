@@ -59,14 +59,21 @@ public class Client extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_client);
+
+        // Create database if not created
+
         InitializeSQLCipher();
 
+        // Define buttons and selectors
         ImageButton info = (ImageButton) findViewById(R.id.info);
         Button add_blog = (Button) findViewById(R.id.add_blog);
         Button remove_blog = (Button) findViewById(R.id.remove_blog);
         Spinner theme_selector = (Spinner) findViewById(R.id.blog_selector);
 
         info.setBackgroundColor(Color.TRANSPARENT);
+
+        // Info button click dialogue
+
         info.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -102,16 +109,18 @@ public class Client extends Activity {
             }
         });
 
-
+        // Set listener on add blog button
         add_blog.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View add_button) {
-
+                // Calls the AddBlogs view
                 startActivity(new Intent(Client.this, AddBlogs.class));
 
             }
         });
+
+        // Set listener on remove button
 
         remove_blog.setOnClickListener(new OnClickListener() {
 
@@ -119,6 +128,9 @@ public class Client extends Activity {
             public void onClick(View add_button) {
                 String[] selectedBlog = getSelectedBlog();
                 int selectedId = Integer.parseInt(selectedBlog[0]);
+
+                // Prevents removing default blog
+
                 if(selectedId == 1) {
                     AlertDialog.Builder defaultBlogAlert = new AlertDialog.Builder(Client.this);
                     defaultBlogAlert.setTitle("Cannot Remove Blog")
@@ -135,6 +147,9 @@ public class Client extends Activity {
                     alert.show();
 
                 }
+
+                // Removes entered blog
+
                 else {
                     AlertDialog.Builder removeAlert = new AlertDialog.Builder(Client.this);
                     removeAlert.setTitle("Delete Blog")
@@ -192,6 +207,8 @@ public class Client extends Activity {
         PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
         boolean isScreenOn = powerManager.isScreenOn();
 
+        // If screen is on do an online check.  If online then get blogs.
+
         if (isScreenOn) {
 
         if(CheckConnectivity.isOnline(Client.this)) {
@@ -228,6 +245,8 @@ public class Client extends Activity {
         }
 	}
 
+    // Gets the active theme
+
     private class getActiveTheme extends AsyncTask<String,Void,String> {
         String theme_name;
         protected String doInBackground(String... urls) {
@@ -260,6 +279,8 @@ public class Client extends Activity {
 
     }
 
+    // Puts a check box next to the active button
+
     private void checkButton(View button, String status) {
     	if (status.equals("active")) {
     		Drawable image = getBaseContext().getResources().getDrawable( R.drawable.check );
@@ -273,6 +294,8 @@ public class Client extends Activity {
     		((TextView) button).setCompoundDrawables( null, null, null, null );
     	}
     }
+
+    // Switches the theme
 
     private class switchTheme extends AsyncTask<String,Void,Void> {
         protected void onPreExecute() {
@@ -301,7 +324,7 @@ public class Client extends Activity {
         }
     }
 
-
+    // Gets the list of themes
 
     public class getThemes extends AsyncTask<String,Void,String> {
         boolean check = true;
@@ -396,7 +419,7 @@ public class Client extends Activity {
         }
 
         protected void onPostExecute(String result) {
-
+             // Checks for blog existance
              if (check == true) {
                 new getActiveTheme().execute();
              }
@@ -440,6 +463,8 @@ public class Client extends Activity {
 
     }
 
+    // Gets selected blog information
+
     private String[] getSelectedBlog(){
         String selectedQuery = "SELECT  * FROM " + Globals.SETTINGS_TABLE + " WHERE selected='1'";
 
@@ -480,6 +505,8 @@ public class Client extends Activity {
 
     }
 
+    // Gets the blog list and populates spinner
+
     private void getBlogs(){
         List<String> blogs = new ArrayList<String>();
 
@@ -488,6 +515,9 @@ public class Client extends Activity {
         Cursor cursor = dbase.rawQuery(selectQuery, null);
 
         try {
+
+            // Gets the selected blog information
+
         String[] first = getSelectedBlog();
 
 
@@ -513,13 +543,15 @@ public class Client extends Activity {
 
         Spinner spinner = (Spinner) findViewById(R.id.blog_selector);
 
-
+        // Build the spinner
 
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_item, blogs);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(null);
         spinner.setAdapter(dataAdapter);
+
+
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -568,6 +600,9 @@ public class Client extends Activity {
 
 	}
 
+
+    // Sets the selected blog in database
+
     private void setBlog(String blogName) {
         String clearSelectedQuery = "UPDATE " + Globals.SETTINGS_TABLE + " SET selected='0' WHERE selected='1'";
         String setQuery = "UPDATE " + Globals.SETTINGS_TABLE + " SET selected='1' WHERE blogName='" + blogName + "'";
@@ -596,6 +631,8 @@ public class Client extends Activity {
 
 
     }
+
+    // Removes the blog
 
     private void removeBlog(){
 
@@ -628,6 +665,8 @@ public class Client extends Activity {
 
     }
 
+
+    // Adds buttons to screen
 
     private void addButtons() {
 
@@ -680,6 +719,7 @@ public class Client extends Activity {
 
 	}
 
+    // Sets up database and uses SQLCipher
 
 	private void InitializeSQLCipher() {
 
