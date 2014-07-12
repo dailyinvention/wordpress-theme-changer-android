@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="libs">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/libs/android-support-v4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/commons-codec.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/sqlcipher.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/guava-r09.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/GoogleAdMobAdsSdk-6.4.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

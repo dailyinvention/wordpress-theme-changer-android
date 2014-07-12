@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="dexedLibs">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/bin/dexedLibs/commons-codec-2092447a4eb4b6c9ea5437453bb40fd1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bin/dexedLibs/guava-r09-4bdf9717fac7da646ef1047962177f97.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bin/dexedLibs/sqlcipher-13fc388f3c42b6e9ea32b81a80452078.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bin/dexedLibs/android-support-v4-a0edb6910ec0513747638d059a62c957.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
